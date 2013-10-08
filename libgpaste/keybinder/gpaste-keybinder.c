@@ -111,9 +111,8 @@ g_paste_keybinder_deactivate_all (GPasteKeybinder *self)
 }
 
 static GdkFilterReturn
-g_paste_keybinder_filter (GdkXEvent *xevent,
-                          GdkEvent  *event G_GNUC_UNUSED,
-                          gpointer   data)
+g_paste_keybinder_filter (const ClutterEvent *event,
+                          gpointer            data)
 {
     GPasteKeybinderPrivate *priv = data;
 
@@ -121,10 +120,10 @@ g_paste_keybinder_filter (GdkXEvent *xevent,
     {
         GPasteKeybinding *real_keybinding = keybinding->data;
         if (g_paste_keybinding_is_active (real_keybinding))
-            g_paste_keybinding_notify (real_keybinding, xevent);
+            g_paste_keybinding_notify (real_keybinding, event);
     }
 
-    return GDK_FILTER_CONTINUE;
+    return CLUTTER_EVENT_PROPAGATE;
 }
 
 static void
@@ -135,6 +134,8 @@ g_paste_keybinder_dispose (GObject *object)
 
     if (priv->keybindings)
     {
+        clutter_event_remove_filter (g_paste_keybinder_filter, priv);
+
         g_paste_keybinder_deactivate_all (self);
         g_slist_foreach (priv->keybindings, (GFunc) g_object_unref, NULL);
         priv->keybindings = NULL;
@@ -156,9 +157,7 @@ g_paste_keybinder_init (GPasteKeybinder *self)
 
     priv->keybindings = NULL;
 
-    gdk_window_add_filter (gdk_get_default_root_window (),
-                           g_paste_keybinder_filter,
-                           priv);
+    clutter_event_add_filter (g_paste_keybinder_filter, priv);
 }
 
 /**

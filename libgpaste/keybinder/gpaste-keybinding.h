@@ -55,11 +55,11 @@ G_PASTE_VISIBLE
 #endif
 GType g_paste_keybinding_get_type (void);
 
-void            g_paste_keybinding_activate      (GPasteKeybinding *self);
-void            g_paste_keybinding_deactivate    (GPasteKeybinding *self);
-gboolean        g_paste_keybinding_is_active     (GPasteKeybinding *self);
-void            g_paste_keybinding_notify        (GPasteKeybinding *self,
-                                                  GdkXEvent        *xevent);
+void            g_paste_keybinding_activate      (GPasteKeybinding   *self);
+void            g_paste_keybinding_deactivate    (GPasteKeybinding   *self);
+gboolean        g_paste_keybinding_is_active     (GPasteKeybinding   *self);
+void            g_paste_keybinding_notify        (GPasteKeybinding   *self,
+                                                  const ClutterEvent *event);
 
 GPasteKeybinding *g_paste_keybinding_new (GPasteSettings        *settings,
                                           const gchar           *dconf_key,
